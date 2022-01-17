@@ -1,0 +1,37 @@
+/*
+Theme Name:   twentytwentyone child theme
+Description:  Escribe aquí una descripción corta acerca de tu tema hijo
+Author:       admin
+Author URL:   http://wordpress58.local
+Template:     twentytwentyone
+Version:      1.0
+License:      GNU General Public License v2 or later
+License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  twentytwentyone-child
+*/
+
+/* Escribe aquí tu propia hoja de estilos personal */
+
+.msg {
+  font-family: Helvetica, sans-serif;
+  font-size: 1rem;
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  margin: 10px auto;
+}
+.msg-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+.msg-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+.msg-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
