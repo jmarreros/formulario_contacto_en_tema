@@ -11,26 +11,35 @@ function dcms_process_form(){
     $form = [];
     parse_str($_POST['form'], $form);
 
-    $name   = $form['name'];
     $email  = filter_var($form['email'], FILTER_VALIDATE_EMAIL);
-    $tel    = $form['tel'];
-    $select = $form['relacionada'];
-    $url    = $form['url'];
-    $msg    = $form['msg'];
 
     // Validacion
     $res = [];
     if ( ! $email ) $res = [ 'status' => '0', 'msg' => "Error en el corre enviado"];
-    elseif ( ! $name )  $res = [ 'status' => '0', 'msg' => "Error debes ingresar un nombre"];
-    elseif ( ! $msg )   $res = [ 'status' => '0', 'msg' => "Error debes ingresar un mensaje"];
+    elseif ( ! $form['name'] )  $res = [ 'status' => '0', 'msg' => "Error debes ingresar un nombre"];
+    elseif ( ! $form['msg'] )   $res = [ 'status' => '0', 'msg' => "Error debes ingresar un mensaje"];
 
     if ( empty($res) ){
+        save_post_contacto($form);
         $res = [ 'status' => '1', 'msg' => "Se ha enviado tu mensaje correctamente"];
     }
 
     echo json_encode($res);
 
 	wp_die();
+}
+
+
+function save_post_contacto($form){
+
+    $str = "Nombre: {$form['name']} \n";
+    $str .= "Email: {$form['email']} \n";
+    $str .= $form['tel']?"Tel: {$form['tel']} \n":'';
+    $str .= "Opción: {$form['relacionada']} \n";
+    $str .= $form['url']?"Sitio: {$form['url']} \n":'';
+    $str .= "Mensaje:\n {$form['msg']} \n";
+
+    error_log($str);
 }
 
 
