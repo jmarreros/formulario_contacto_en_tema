@@ -40,7 +40,7 @@ function dcms_create_contacto() {
 		'labels'                => $labels,
 		'supports'              => array( 'title', 'editor', 'custom-fields' ),
 		'hierarchical'          => false,
-		'public'                => true,
+		'public'                => false,
 		'show_ui'               => true,
 		'show_in_menu'          => true,
 		'menu_position'         => 5,
@@ -50,7 +50,7 @@ function dcms_create_contacto() {
 		'can_export'            => true,
 		'has_archive'           => false,
 		'exclude_from_search'   => true,
-		'publicly_queryable'    => true,
+		'publicly_queryable'    => false,
 		'capability_type'       => 'post',
         'capabilities' => array(
             'create_posts' => false,

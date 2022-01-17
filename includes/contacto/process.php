@@ -20,29 +20,52 @@ function dcms_process_form(){
     elseif ( ! $form['msg'] )   $res = [ 'status' => '0', 'msg' => "Error debes ingresar un mensaje"];
 
     if ( empty($res) ){
-        save_post_contacto($form);
-        $res = [ 'status' => '1', 'msg' => "Se ha enviado tu mensaje correctamente"];
+
+        $title = "Contacto - {$form['relacionada']} - {$form['name']}";
+        $message = create_message($form);
+
+        // Save post
+        $result_save = wp_insert_post([
+                                    'post_title' => $title,
+                                    'post_type' => 'dcms_contacto',
+                                    'post_content' => $message,
+                                    'post_status' => 'publish'
+                                ]);
+
+        // Send email
+        $result_send = wp_mail($email, $title, $message, [
+                                    "Content-Type: text/html; charset=UTF-8",
+                                    "Reply-To: {$form['name']} <{$email}>"
+                                ]);
+
+        if ( ! $result_save  || ! $result_send ) {
+            $res = [ 'status' => '0', 'msg' => "Existe un error al enviar el formulario, inténtelo más tarde"];
+
+            error_log('Error al grabar o enviar el formulario de contacto:');
+            error_log(print_r($form,true));
+        } else {
+            $res = [ 'status' => '1', 'msg' => "Se ha enviado tu mensaje correctamente"];
+        }
+
     }
 
     echo json_encode($res);
-
 	wp_die();
 }
 
 
-function save_post_contacto($form){
 
-    $str = "Nombre: {$form['name']} \n";
-    $str .= "Email: {$form['email']} \n";
-    $str .= $form['tel']?"Tel: {$form['tel']} \n":'';
-    $str .= "Opción: {$form['relacionada']} \n";
-    $str .= $form['url']?"Sitio: {$form['url']} \n":'';
-    $str .= "Mensaje:\n {$form['msg']} \n";
 
-    error_log($str);
+function create_message($form){
+    $str =  "-Nombre: {$form['name']} <br>";
+    $str .= "-Email: {$form['email']} <br>";
+    $str .= $form['tel']?"-Tel: {$form['tel']} <br>":'';
+    $str .= "-Consulta: {$form['relacionada']} <br>";
+    $str .= $form['url']?"Sitio: {$form['url']} <br>":'';
+    $str .= "-Mensaje:<br>{$form['msg']} <br>";
+
+    return $str;
 }
-
-
 
 function validate_nonce( $nonce_name ){
     if ( ! wp_verify_nonce( $_POST['nonce'], $nonce_name ) ) {

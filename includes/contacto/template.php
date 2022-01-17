@@ -16,7 +16,7 @@
         </label>
 
         <label>
-            <input type="radio" name="relacionada" value="SEO   ">
+            <input type="radio" name="relacionada" value="SEO">
             <span>SEO</span>
         </label>
 
