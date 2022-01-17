@@ -6,10 +6,12 @@ add_action('wp_ajax_dcms_process_form','dcms_process_form');
 
 function dcms_process_form(){
 
-    validate_nonce('contacto-nonce');
 
     $form = [];
     parse_str($_POST['form'], $form);
+
+    validate_nonce('contacto-nonce');
+    validate_recaptcha($form);
 
     $email  = filter_var($form['email'], FILTER_VALIDATE_EMAIL);
 
@@ -54,8 +56,6 @@ function dcms_process_form(){
 }
 
 
-
-
 function create_message($form){
     $str =  "-Nombre: {$form['name']} <br>";
     $str .= "-Email: {$form['email']} <br>";
@@ -65,6 +65,31 @@ function create_message($form){
     $str .= "-Mensaje:<br>{$form['msg']} <br>";
 
     return $str;
+}
+
+
+function validate_recaptcha($form){
+    $token = $form['token'];
+    $action = $form['action'];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,"https://www.google.com/recaptcha/api/siteverify");
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('secret' => RECAPTCHA_V3_SECRET_KEY, 'response' => $token)));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $arrResponse = json_decode($response, true);
+
+    // verify the response
+    if($arrResponse["success"] != '1' || $arrResponse["action"] != $action || $arrResponse["score"] < 0.5) {
+        $res = [
+            'status' => 0,
+            'msg' => '✋ Error, refresca la página para volver a enviar'
+        ];
+        echo json_encode($res);
+        wp_die();
+    }
 }
 
 function validate_nonce( $nonce_name ){
@@ -77,3 +102,6 @@ function validate_nonce( $nonce_name ){
         wp_die();
     }
 }
+
+
+

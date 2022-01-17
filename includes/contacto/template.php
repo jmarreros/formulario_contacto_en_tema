@@ -1,3 +1,5 @@
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo RECAPTCHA_V3_PUBLIC_KEY ?>"></script>
+
 <form action="" method="post" id="we-contacto">
 
     <input type="text" name="name" id="name" placeholder="Persona de contacto" required>

@@ -39,7 +39,8 @@ function dcms_insertar_js(){
 
 	wp_localize_script('wescript','we_vars',[
 											'ajaxurl'=>admin_url('admin-ajax.php'),
-											'dcmscontact' => wp_create_nonce('contacto-nonce')
+											'dcmscontact' => wp_create_nonce('contacto-nonce'),
+											'public_recaptcha' => RECAPTCHA_V3_PUBLIC_KEY
 											]
 					);
 }
